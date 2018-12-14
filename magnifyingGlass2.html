@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>局部放大背景</title>
+    <style type="text/css">
+        .box{
+            width: 350px;
+            height: 350px;
+            background-color: #ddd;
+            background-image: url(3.jpg);
+            margin-top: 50px;
+            position: relative;
+
+        }
+
+
+        .slider{
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 0, .9);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            display: none;
+        }
+
+        .operation{
+            width: 350px;
+            height: 350px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 2;
+            cursor: move;
+        }
+
+        .img{
+            margin: 0;
+            padding: 0;
+            width: 350px;
+            height: 350px;           
+        }
+        .box1{
+            width: 450px;
+            height: 450px;
+            background: url(3.jpg);
+            margin-top: -400px;
+            margin-left: 450px;
+            position: relative;
+            display: none;
+        }
+        img{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="box" class="box">
+        <div id="slider" class="slider">
+        </div>
+        <div class="operation" id="operation">
+        </div>
+    </div>
+    <img id="img" src="3.jpg" alt=""><img id="img" src="4.jpg" alt=""><img id="img" src="5.jpg" alt="">
+    <div id="box1" class="box1">
+    </div>
+<script type="text/javascript"> 
+    window.onload = function () {
+        function getId(id){
+            return document.getElementById(id);
+        }
+        var box = getId('box');
+        var operation = getId('operation');
+        var slider = getId('slider');
+        var box1 = getId('box1');
+        //用getComputedStyle获取宽高   
+        var w=parseFloat(getComputedStyle(slider).width);
+        var h=parseFloat(getComputedStyle(slider).height);
+        var wf=parseFloat(getComputedStyle(operation).width);
+        var hf=parseFloat(getComputedStyle(operation).height);
+        var w2=parseFloat(getComputedStyle(box).width);
+        var h2=parseFloat(getComputedStyle(box).height);
+        var w3=parseFloat(getComputedStyle(box1).width);
+        var h3=parseFloat(getComputedStyle(box1).height);
+
+        // 鼠标进入时
+        operation.onmousemove = function (e) {
+            // 获取鼠标坐标
+            var x = e.offsetX;
+            var y = e.offsetY;
+            // 打开box1
+            box1.style.display="block";
+            slider.style.display="block";
+            var le=x-w/2;
+            le=le>=wf-w ? wf-w:le <= 0?0:le;
+            slider.style.left=le+'px';
+
+            var to=y-h/2;
+            to=to>=hf-h ? hf-h: to <= 0? 0: to;
+            slider.style.top=to+'px';
+
+            // 放大倍数
+            var l=w2/w*w3;
+            var t=h2/h*h3;
+            box1.style.backgroundSize=l+'px'+' '+t+'px';
+
+            //背景移动
+            var lef=w3/w*le;
+            var topp=h3/h*to;
+            box1.style.backgroundPosition=-lef+'px'+' '+-topp+'px';
+        }
+            // 鼠标离开时box1消失
+            operation.onmouseout=function(){
+                box1.style.display="none";
+                slider.style.display='none';
+
+            }
+            var img=document.querySelectorAll('#img');
+            for(var i=0;i<img.length;i++){
+                img[i].onmouseover = function () {
+                    var imgsrc=this.getAttribute('src');
+                    box.style.background='url('+imgsrc+')';
+                    box1.style.background='url('+imgsrc+')';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
